@@ -15,7 +15,29 @@
 
 <body>
     <section class="app">
-        <div class="button"></div>
+        <div class="game-controller">
+            <div class="button">
+                <i class="fas fa-play playBtn"></i>
+            </div>
+            <div class="timer">
+                <span class="minutes">00</span>
+                <span class="devider">:</span>
+                <span class="seconds">00</span>
+            </div>
+            <div class="score-box">
+                <span class="score">0</span>
+            </div>
+        </div>
+        <div class="playfield">
+            <img src="./images/carrot.png" alt="carrot">
+            <img src="./images/bug.png" alt="bug.png">
+        </div>
+        <div class="modal hidden">
+            <div class="replay-container">
+                <i class="fas fa-redo replay"></i>
+            </div>
+            <h3 class="result">YOU WON !</h3>
+        </div>
     </section>
 </body>
 
