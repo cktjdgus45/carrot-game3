@@ -51,7 +51,9 @@ body{
     display: flex;
     flex-direction: column;
     width: 700px;
+    min-width: 700px;
     height: 500px;
+    min-height: 700px;
     background-image: url('./images/background.png');
     background-size: cover;
     background-repeat: no-repeat;
