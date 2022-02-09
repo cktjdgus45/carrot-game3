@@ -48,10 +48,19 @@ const showRandomPositionedItems = () => {
     }
 }
 
+const changeIcon = () => {
+    if (playing) {
+        const playIcon = playBtn.childNodes[0].nextElementSibling;
+        playIcon.className = 'fas fa-pause playBtn';
+    }
+}
+
 const gameStart = (evnet) => {
     //set carrot,bug randomly
     showRandomPositionedItems();
     playing = true;
+    //change icon
+    changeIcon();
     //set time,score
     //music start
 }
