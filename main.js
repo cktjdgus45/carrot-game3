@@ -2,7 +2,8 @@
 let playing = false;
 const playBtn = document.querySelector('.button');
 const playField = document.querySelector('.playfield');
-const ITEM_COUNT = 10;
+const CARROT_COUNT = 10;
+const BUG_COUNT = 10;
 
 const getRandomNumber = (min, max) => {
     const randomNum = Math.floor(Math.random() * (max - min) + min);
@@ -16,42 +17,41 @@ const getRandomCoords = (item) => {
     const minHeight = 0;
     const maxHeight = playField.getBoundingClientRect().height - item.naturalHeight;
     const y = getRandomNumber(minHeight, maxHeight);
-    const coords = {
-        x,
-        y
-    }
-    return coords;
+    item.dataset.x = `${x}px`;
+    item.dataset.y = `${y}px`;
 }
 
-const setItemStyle = (item, itemName) => {
-    item.src = `./images/${itemName}.png`;
-    item.style.position = 'absolute';
-    item.style.left = `${getRandomCoords(item).x}px`;
-    item.style.top = `${getRandomCoords(item).y}px`;
+const setImgStyle = (img) => {
+    img.style.left = img.dataset.x;
+    img.style.top = img.dataset.y;
+    img.style.position = 'absolute';
+    img.style.cursor = 'pointer';
 }
 
-const attachItemOnFiled = (count) => {
+const makeItem = (name, count) => {
     let step;
     for (step = 0; step < count; step++) {
-        const carrot = document.createElement('img');
-        const bug = document.createElement('img');
-        setItemStyle(carrot, 'carrot');
-        setItemStyle(bug, 'bug');
-        playField.appendChild(carrot);
-        playField.appendChild(bug);
+        const img = new Image();
+        img.src = `./images/${name}.png`;
+        img.onload = function () {
+            getRandomCoords(img);
+            setImgStyle(img);
+            playField.insertAdjacentElement('afterbegin', img);
+        }
     }
 }
 
 const showRandomPositionedItems = () => {
     if (!playing) {
-        attachItemOnFiled(ITEM_COUNT);
+        makeItem('carrot', CARROT_COUNT);
+        makeItem('bug', BUG_COUNT);
     }
 }
 
 const gameStart = (evnet) => {
+    //set carrot,bug randomly
     showRandomPositionedItems();
     playing = true;
-    //set carrot,bug randomly
     //set time,score
     //music start
 }
