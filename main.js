@@ -6,6 +6,7 @@ const modal = document.querySelector('.modal');
 const replayBtn = modal.querySelector('.replay-container');
 const CARROT_COUNT = 10;
 const BUG_COUNT = 10;
+const bgSound = new Audio('./audio/bg.mp3');
 
 const getRandomNumber = (min, max) => {
     const randomNum = Math.floor(Math.random() * (max - min) + min);
@@ -70,11 +71,20 @@ const changeIcon = () => {
     }
 }
 
+const audioStart = () => {
+    bgSound.play();
+}
+const audioStop = () => {
+    bgSound.pause();
+    bgSound.currentTime = 0;
+}
+
 const playingGame = () => {
     if (playing) {
         showRandomPositionedItems();
         changeIcon();
         handlePointer(playing);
+        audioStart();
         console.log('playing')
     }
 }
@@ -84,6 +94,7 @@ const pausingGame = () => {
         changeIcon();
         handleModal();
         handlePointer(playing);
+        audioStop();
         console.log('pause')
     }
 }
