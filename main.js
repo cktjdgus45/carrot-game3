@@ -1,5 +1,5 @@
 //1.game start
-let playing = false;
+let playing;
 const playBtn = document.querySelector('.button');
 const playField = document.querySelector('.playfield');
 const CARROT_COUNT = 10;
@@ -40,32 +40,56 @@ const makeItem = (name, count) => {
         }
     }
 }
-
 const showRandomPositionedItems = () => {
-    if (!playing) {
+    if (playing) {
         makeItem('carrot', CARROT_COUNT);
         makeItem('bug', BUG_COUNT);
     }
 }
 
+const showModal = () => {
+    const modal = document.querySelector('.modal');
+    modal.classList.toggle('hidden');
+}
+
 const changeIcon = () => {
+    const playIcon = playBtn.childNodes[0].nextElementSibling;
     if (playing) {
-        const playIcon = playBtn.childNodes[0].nextElementSibling;
         playIcon.className = 'fas fa-pause playBtn';
+    } else {
+        playIcon.className = 'fas fa-play playBtn';
     }
 }
 
-const gameStart = (evnet) => {
-    //set carrot,bug randomly
-    showRandomPositionedItems();
-    playing = true;
-    //change icon
-    changeIcon();
-    //set time,score
-    //music start
+const playingGame = () => {
+    if (playing) {
+        showRandomPositionedItems();
+        changeIcon();
+        console.log('playing')
+    }
+}
+const pausingGame = () => {
+    if (!playing) {
+        showRandomPositionedItems();
+        changeIcon();
+        playBtn.style.pointerEvents = 'none';
+        showModal();
+        console.log('pause')
+    }
 }
 
-playBtn.addEventListener('click', gameStart);
+const handlePlayBtn = (event) => {
+    if (!playing) {
+        playing = true
+    } else {
+        playing = false;
+    }
+    //playing = true;
+    playing ? playingGame() : pausingGame();
+    //playing = false;
+}
+
+playBtn.addEventListener('click', handlePlayBtn);
 //mustic start
 //set time,score
 //set carrot,bug randomly
