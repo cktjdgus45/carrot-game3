@@ -53,6 +53,14 @@ const handleModal = () => {
     modal.classList.toggle('hidden');
 }
 
+const handlePointer = (playing) => {
+    if (playing) {
+        playBtn.style.pointerEvents = 'auto';
+        return;
+    }
+    playBtn.style.pointerEvents = 'none';
+}
+
 const changeIcon = () => {
     const playIcon = playBtn.childNodes[0].nextElementSibling;
     if (playing) {
@@ -66,7 +74,7 @@ const playingGame = () => {
     if (playing) {
         showRandomPositionedItems();
         changeIcon();
-        playBtn.style.pointerEvents = 'auto';
+        handlePointer(playing);
         console.log('playing')
     }
 }
@@ -74,8 +82,8 @@ const pausingGame = () => {
     if (!playing) {
         showRandomPositionedItems();
         changeIcon();
-        playBtn.style.pointerEvents = 'none';
         handleModal();
+        handlePointer(playing);
         console.log('pause')
     }
 }
