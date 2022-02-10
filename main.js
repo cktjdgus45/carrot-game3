@@ -2,6 +2,8 @@
 let playing;
 const playBtn = document.querySelector('.button');
 const playField = document.querySelector('.playfield');
+const modal = document.querySelector('.modal');
+const replayBtn = modal.querySelector('.replay-container');
 const CARROT_COUNT = 10;
 const BUG_COUNT = 10;
 
@@ -47,8 +49,7 @@ const showRandomPositionedItems = () => {
     }
 }
 
-const showModal = () => {
-    const modal = document.querySelector('.modal');
+const handleModal = () => {
     modal.classList.toggle('hidden');
 }
 
@@ -65,6 +66,7 @@ const playingGame = () => {
     if (playing) {
         showRandomPositionedItems();
         changeIcon();
+        playBtn.style.pointerEvents = 'auto';
         console.log('playing')
     }
 }
@@ -73,12 +75,12 @@ const pausingGame = () => {
         showRandomPositionedItems();
         changeIcon();
         playBtn.style.pointerEvents = 'none';
-        showModal();
+        handleModal();
         console.log('pause')
     }
 }
 
-const handlePlayBtn = (event) => {
+const handlePlayBtn = () => {
     if (!playing) {
         playing = true
     } else {
@@ -89,8 +91,24 @@ const handlePlayBtn = (event) => {
     //playing = false;
 }
 
+const removeItems = () => {
+    Array.from(playField.childNodes).map(item => {
+        playField.removeChild(item);
+    })
+}
+
+const handlereplayBtn = () => {
+    removeItems();
+    handleModal();
+    handlePlayBtn();
+}
+
 playBtn.addEventListener('click', handlePlayBtn);
-//mustic start
+replayBtn.addEventListener('click', handlereplayBtn);
+
+
+
+//music start
 //set time,score
 //set carrot,bug randomly
 
