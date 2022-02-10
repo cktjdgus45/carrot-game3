@@ -1,16 +1,25 @@
-//1.game start
-let playing;
 const playBtn = document.querySelector('.button');
 const playField = document.querySelector('.playfield');
 const modal = document.querySelector('.modal');
 const replayBtn = modal.querySelector('.replay-container');
 const seconds = document.querySelector('.seconds');
 const result = document.querySelector('.result');
+const score = document.querySelector('.score');
+
 const CARROT_COUNT = 10;
 const BUG_COUNT = 10;
-let gameTime = 13;
-const bgSound = new Audio('./audio/bg.mp3');
+let gameTime = 10;
+let playing;
 let timeId;
+let resultStates = {
+    win: "win",
+    timeover: "timeover",
+    lose: "lose"
+};
+
+const bgSound = new Audio('./audio/bg.mp3');
+const bugPullSound = new Audio('./audio/bug_pull.mp3');
+const carrotPullSound = new Audio('./audio/carrot_pull.mp3');
 
 const getRandomNumber = (min, max) => {
     const randomNum = Math.floor(Math.random() * (max - min) + min);
@@ -28,6 +37,47 @@ const getRandomCoords = (item) => {
     item.dataset.y = `${y}px`;
 }
 
+const showGameResult = (resultStates) => {
+    //3가지 경우 -1.직접 정지 , 2.시간초과 혹은 벌레 클릭 , 3.시간안 성공.
+    switch (resultStates) {
+        case "win":
+            const gameWinSound = new Audio('./audio/game_win.mp3');
+            gameWinSound.play();
+            result.innerText = "you won!";
+            break;
+        case "timeover":
+            result.innerText = "time over!";
+            const alertSound = new Audio('./audio/alert.wav');
+            alertSound.play();
+            break;
+        case "lose":
+            result.innerText = "you lose!";
+            break;
+        case "default":
+            result.innerText = "try again!";
+            break;
+        default:
+            throw Error('result is unexpacted');
+    }
+}
+
+const handleCarrotClicked = (event) => {
+    const clicked = event.target;
+    playField.removeChild(clicked);
+    const carrotCount = Array.from(playField.children).filter(item => item.className == "carrot").length;
+    score.innerHTML = `${carrotCount}`;
+    carrotPullSound.play();
+    if (carrotCount === 0) { //성공할경우.
+        playing = false;
+        pausingGame(resultStates.win);
+    }
+}
+const handleBugClicked = () => { //벌레 누를경우.
+    bugPullSound.play();
+    playing = false;
+    pausingGame(resultStates.lose);
+}
+
 const setImgStyle = (img) => {
     img.style.left = img.dataset.x;
     img.style.top = img.dataset.y;
@@ -35,15 +85,29 @@ const setImgStyle = (img) => {
     img.style.cursor = 'pointer';
 }
 
+const setImgEvent = (img, name) => {
+    if (name === "carrot") {
+        img.onclick = handleCarrotClicked;
+    } else if (name === "bug") {
+        img.onclick = handleBugClicked;
+    }
+}
+const setScore = () => {
+    const carrotCount = Array.from(playField.children).filter(item => item.className == "carrot").length;
+    score.innerHTML = `${carrotCount}`;
+}
 const makeItem = (name, count) => {
     let step;
     for (step = 0; step < count; step++) {
         const img = new Image();
         img.src = `./images/${name}.png`;
+        img.className = name;
         img.onload = function () {
             getRandomCoords(img);
             setImgStyle(img);
+            setImgEvent(img, name);
             playField.insertAdjacentElement('afterbegin', img);
+            setScore();
         }
     }
 }
@@ -56,6 +120,7 @@ const showRandomPositionedItems = () => {
 
 const handleModal = () => {
     modal.classList.toggle('hidden');
+    Array.from(playField.children).map(item => item.style.pointerEvents = 'none');
 }
 
 const handlePointer = (playing) => {
@@ -85,17 +150,11 @@ const audioStop = () => {
 
 const handleSetInterval = () => {
     gameTime--;
-    console.log(gameTime)
     seconds.innerHTML = gameTime < 10 ? `0${gameTime}` : `${gameTime}`;
-    if (gameTime == 0) {
+    if (gameTime == 0) { //시간초과할경우.
         playing = false;
-        pausingGame();
+        pausingGame(resultStates.timeover);
     }
-}
-
-const showGameResult = () => {
-    result.innerHTML = 'YOU FAIED!';
-    //3가지 경우 -1.직접 정지 , 2.시간초과 혹은 벌레 클릭 , 3.시간안 성공.
 }
 
 const resetGameTime = () => {
@@ -113,7 +172,7 @@ const playingGame = () => {
     }
 }
 
-const pausingGame = () => {
+const pausingGame = (resultState) => {
     if (!playing) {
         showRandomPositionedItems();
         changeIcon();
@@ -122,7 +181,7 @@ const pausingGame = () => {
         audioStop();
         clearInterval(timeId);
         resetGameTime();
-        showGameResult();
+        showGameResult(resultState || "default");
         console.log('pause')
     }
 }
@@ -152,14 +211,3 @@ const handlereplayBtn = () => {
 
 playBtn.addEventListener('click', handlePlayBtn);
 replayBtn.addEventListener('click', handlereplayBtn);
-
-//music start
-//set time,score
-//set carrot,bug randomly
-
-//2.game end
-//show modal
-//music stop
-
-//3.game redo
-//do again 1 process.
