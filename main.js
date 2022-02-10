@@ -4,9 +4,13 @@ const playBtn = document.querySelector('.button');
 const playField = document.querySelector('.playfield');
 const modal = document.querySelector('.modal');
 const replayBtn = modal.querySelector('.replay-container');
+const seconds = document.querySelector('.seconds');
+const result = document.querySelector('.result');
 const CARROT_COUNT = 10;
 const BUG_COUNT = 10;
+let gameTime = 13;
 const bgSound = new Audio('./audio/bg.mp3');
+let timeId;
 
 const getRandomNumber = (min, max) => {
     const randomNum = Math.floor(Math.random() * (max - min) + min);
@@ -79,15 +83,36 @@ const audioStop = () => {
     bgSound.currentTime = 0;
 }
 
+const handleSetInterval = () => {
+    gameTime--;
+    console.log(gameTime)
+    seconds.innerHTML = gameTime < 10 ? `0${gameTime}` : `${gameTime}`;
+    if (gameTime == 0) {
+        playing = false;
+        pausingGame();
+    }
+}
+
+const showGameResult = () => {
+    result.innerHTML = 'YOU FAIED!';
+    //3가지 경우 -1.직접 정지 , 2.시간초과 혹은 벌레 클릭 , 3.시간안 성공.
+}
+
+const resetGameTime = () => {
+    gameTime = 10;
+}
+
 const playingGame = () => {
     if (playing) {
         showRandomPositionedItems();
         changeIcon();
         handlePointer(playing);
         audioStart();
+        timeId = setInterval(handleSetInterval, 1000);
         console.log('playing')
     }
 }
+
 const pausingGame = () => {
     if (!playing) {
         showRandomPositionedItems();
@@ -95,6 +120,9 @@ const pausingGame = () => {
         handleModal();
         handlePointer(playing);
         audioStop();
+        clearInterval(timeId);
+        resetGameTime();
+        showGameResult();
         console.log('pause')
     }
 }
@@ -124,8 +152,6 @@ const handlereplayBtn = () => {
 
 playBtn.addEventListener('click', handlePlayBtn);
 replayBtn.addEventListener('click', handlereplayBtn);
-
-
 
 //music start
 //set time,score
