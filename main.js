@@ -38,7 +38,6 @@ const getRandomCoords = (item) => {
 }
 
 const showGameResult = (resultStates) => {
-    //3가지 경우 -1.직접 정지 , 2.시간초과 혹은 벌레 클릭 , 3.시간안 성공.
     switch (resultStates) {
         case "win":
             const gameWinSound = new Audio('./audio/game_win.mp3');
@@ -168,7 +167,6 @@ const playingGame = () => {
         handlePointer(playing);
         audioStart();
         timeId = setInterval(handleSetInterval, 1000);
-        console.log('playing')
     }
 }
 
@@ -182,7 +180,6 @@ const pausingGame = (resultState) => {
         clearInterval(timeId);
         resetGameTime();
         showGameResult(resultState || "default");
-        console.log('pause')
     }
 }
 
@@ -192,9 +189,7 @@ const handlePlayBtn = () => {
     } else {
         playing = false;
     }
-    //playing = true;
     playing ? playingGame() : pausingGame();
-    //playing = false;
 }
 
 const removeItems = () => {
